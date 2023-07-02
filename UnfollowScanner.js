@@ -107,6 +107,14 @@ async function startScript() {
       link.style.transition = "background-color 0.3s";
       link.style.cursor = "pointer";
 
+      link.addEventListener("mouseenter", () => {
+        link.style.backgroundColor = "#3a3a3a";
+      });
+
+      link.addEventListener("mouseleave", () => {
+        link.style.backgroundColor = "#292929";
+      });
+
       let profileImage = document.createElement("img");
       profileImage.src = profile.profile_pic_url;
       profileImage.alt = `${profile.username}'s profile picture`;
@@ -131,6 +139,12 @@ async function startScript() {
       let unfollowButton = document.createElement("button");
       unfollowButton.textContent = "Unfollow";
       unfollowButton.style.marginTop = "10px";
+      unfollowButton.style.padding = "6px 12px";
+      unfollowButton.style.borderRadius = "4px";
+      unfollowButton.style.backgroundColor = "#e91e63";
+      unfollowButton.style.color = "#fff";
+      unfollowButton.style.border = "none";
+      unfollowButton.style.cursor = "pointer";
 
       unfollowButton.addEventListener("click", async (event) => {
         event.preventDefault(); // Evitar que se abra el enlace
@@ -152,7 +166,7 @@ async function startScript() {
             console.error(`Failed to unfollow ${profile.username}`);
           }
         } catch (error) {
-          console.error(error);
+          console.error(`Error unfollowing ${profile.username}:`, error);
         }
       });
 
@@ -162,13 +176,13 @@ async function startScript() {
 
       container.appendChild(link);
     });
+
+    document.documentElement.appendChild(container);
+
+    console.log("Document content replaced!");
   }
 
   generateCards();
-
-  document.documentElement.appendChild(container);
-
-  console.log("Document content replaced!");
 }
 
 startScript();
