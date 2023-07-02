@@ -28,6 +28,23 @@ let followedPeople,
   scrollCicle = 0;
 
 async function startScript() {
+  const progressBar = document.createElement("div");
+  progressBar.style.width = "100%";
+  progressBar.style.height = "30px";
+  progressBar.style.backgroundColor = "#ccc";
+  progressBar.style.position = "fixed";
+  progressBar.style.top = "0";
+  progressBar.style.left = "0";
+  progressBar.style.zIndex = "9999";
+
+  const progressFill = document.createElement("div");
+  progressFill.style.width = "0";
+  progressFill.style.height = "100%";
+  progressFill.style.backgroundColor = "#4caf50";
+
+  progressBar.appendChild(progressFill);
+  document.body.appendChild(progressBar);
+
   for (var c, d, e, b, f, g = Math.floor; doNext; ) {
     let a;
     try {
@@ -66,6 +83,9 @@ async function startScript() {
       console.log("Sleeping 10 secs to prevent getting temp blocked");
       await sleep(10000);
     }
+
+    const progressPercent = (getUnfollowCounter / followedPeople) * 100;
+    progressFill.style.width = `${progressPercent}%`;
   }
 
   console.log("Replacing document content...");
