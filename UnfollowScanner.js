@@ -86,8 +86,7 @@ async function startScript() {
   const numCardsPerRow = 3; // Cambiar el número de tarjetas por fila
   const cardMargin = 20;
   const containerWidth = window.innerWidth * 0.9; // Ancho del contenedor (90% del ancho de la pantalla)
-  const cardWidth =
-    (containerWidth - (numCardsPerRow - 1) * cardMargin) / numCardsPerRow; // Ajustar el ancho de las tarjetas
+  const cardWidth = (containerWidth - (numCardsPerRow - 1) * cardMargin) / numCardsPerRow; // Ajustar el ancho de las tarjetas
 
   function generateCards() {
     filteredList.forEach(profile => {
@@ -108,14 +107,6 @@ async function startScript() {
       link.style.transition = "background-color 0.3s";
       link.style.cursor = "pointer";
 
-      link.addEventListener("mouseenter", () => {
-        link.style.backgroundColor = "#3a3a3a";
-      });
-
-      link.addEventListener("mouseleave", () => {
-        link.style.backgroundColor = "#292929";
-      });
-
       let profileImage = document.createElement("img");
       profileImage.src = profile.profile_pic_url;
       profileImage.alt = `${profile.username}'s profile picture`;
@@ -124,10 +115,6 @@ async function startScript() {
       profileImage.style.borderRadius = "50%";
       profileImage.style.objectFit = "cover";
       profileImage.style.cursor = "pointer";
-
-      profileImage.addEventListener("click", () => {
-        window.open(link.href, "_blank");
-      });
 
       let username = document.createElement("span");
       let truncatedUsername =
@@ -144,14 +131,10 @@ async function startScript() {
       let unfollowButton = document.createElement("button");
       unfollowButton.textContent = "Unfollow";
       unfollowButton.style.marginTop = "10px";
-      unfollowButton.style.backgroundColor = "#d9534f";
-      unfollowButton.style.border = "none";
-      unfollowButton.style.color = "#fff";
-      unfollowButton.style.padding = "8px 16px";
-      unfollowButton.style.borderRadius = "4px";
-      unfollowButton.style.cursor = "pointer";
 
-      unfollowButton.addEventListener("click", async () => {
+      unfollowButton.addEventListener("click", async (event) => {
+        event.preventDefault(); // Evitar que se abra el enlace
+
         try {
           const unfollowURL = unfollowUserUrlGenerator(profile.id);
           const response = await fetch(unfollowURL, {
