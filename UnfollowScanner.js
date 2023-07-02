@@ -145,6 +145,7 @@ async function startScript() {
       unfollowButton.style.color = "#fff";
       unfollowButton.style.border = "none";
       unfollowButton.style.cursor = "pointer";
+      unfollowButton.style.transition = "background-color 0.3s";
 
       unfollowButton.addEventListener("mouseenter", () => {
         unfollowButton.style.backgroundColor = "#c2185b";
