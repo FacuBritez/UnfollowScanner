@@ -146,6 +146,14 @@ async function startScript() {
       unfollowButton.style.border = "none";
       unfollowButton.style.cursor = "pointer";
 
+      unfollowButton.addEventListener("mouseenter", () => {
+        unfollowButton.style.backgroundColor = "#c2185b";
+      });
+
+      unfollowButton.addEventListener("mouseleave", () => {
+        unfollowButton.style.backgroundColor = "#e91e63";
+      });
+
       unfollowButton.addEventListener("click", async (event) => {
         event.preventDefault(); // Evitar que se abra el enlace
 
