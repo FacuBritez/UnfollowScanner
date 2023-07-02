@@ -28,11 +28,7 @@ let followedPeople,
   scrollCicle = 0;
 
 async function startScript() {
-  for (
-    var c, d, e, b, f, g = Math.floor;
-    doNext;
-
-  ) {
+  for (var c, d, e, b, f, g = Math.floor; doNext; ) {
     let a;
     try {
       a = await fetch(initialURL).then(a => a.json());
@@ -90,64 +86,102 @@ async function startScript() {
   const numCardsPerRow = 3; // Cambiar el número de tarjetas por fila
   const cardMargin = 20;
   const containerWidth = window.innerWidth * 0.9; // Ancho del contenedor (90% del ancho de la pantalla)
-  const cardWidth = (containerWidth - (numCardsPerRow - 1) * cardMargin) / numCardsPerRow; // Ajustar el ancho de las tarjetas
+  const cardWidth =
+    (containerWidth - (numCardsPerRow - 1) * cardMargin) / numCardsPerRow; // Ajustar el ancho de las tarjetas
 
-  filteredList.forEach(profile => {
-    let link = document.createElement("a");
-    link.href = `https://www.instagram.com/${profile.username}`;
-    link.target = "_blank"; // Propiedad para abrir en una nueva pestaña
-    link.style.textDecoration = "none";
-    link.style.display = "flex";
-    link.style.flexDirection = "column";
-    link.style.alignItems = "center";
-    link.style.textAlign = "center";
-    link.style.width = `${cardWidth}px`; // Ajustar el ancho de las cards
-    link.style.padding = "10px";
-    link.style.margin = `${cardMargin}px`; // Establecer el margen entre las cards
-    link.style.borderRadius = "8px";
-    link.style.backgroundColor = "#292929";
-    link.style.color = "#FFF";
-    link.style.transition = "background-color 0.3s";
-    link.style.cursor = "pointer";
-
-    link.addEventListener("mouseenter", () => {
-      link.style.backgroundColor = "#3a3a3a";
-    });
-
-    link.addEventListener("mouseleave", () => {
+  function generateCards() {
+    filteredList.forEach(profile => {
+      let link = document.createElement("a");
+      link.href = `https://www.instagram.com/${profile.username}`;
+      link.target = "_blank"; // Propiedad para abrir en una nueva pestaña
+      link.style.textDecoration = "none";
+      link.style.display = "flex";
+      link.style.flexDirection = "column";
+      link.style.alignItems = "center";
+      link.style.textAlign = "center";
+      link.style.width = `${cardWidth}px`; // Ajustar el ancho de las cards
+      link.style.padding = "10px";
+      link.style.margin = `${cardMargin}px`; // Establecer el margen entre las cards
+      link.style.borderRadius = "8px";
       link.style.backgroundColor = "#292929";
+      link.style.color = "#FFF";
+      link.style.transition = "background-color 0.3s";
+      link.style.cursor = "pointer";
+
+      link.addEventListener("mouseenter", () => {
+        link.style.backgroundColor = "#3a3a3a";
+      });
+
+      link.addEventListener("mouseleave", () => {
+        link.style.backgroundColor = "#292929";
+      });
+
+      let profileImage = document.createElement("img");
+      profileImage.src = profile.profile_pic_url;
+      profileImage.alt = `${profile.username}'s profile picture`;
+      profileImage.style.width = "100px";
+      profileImage.style.height = "100px";
+      profileImage.style.borderRadius = "50%";
+      profileImage.style.objectFit = "cover";
+      profileImage.style.cursor = "pointer";
+
+      profileImage.addEventListener("click", () => {
+        window.open(link.href, "_blank");
+      });
+
+      let username = document.createElement("span");
+      let truncatedUsername =
+        profile.username.length > 16
+          ? profile.username.substring(0, 13) + "..."
+          : profile.username;
+      username.textContent = truncatedUsername;
+      username.style.marginTop = "10px";
+      username.style.fontWeight = "bold";
+      username.style.whiteSpace = "nowrap";
+      username.style.overflow = "hidden";
+      username.style.textOverflow = "ellipsis";
+
+      let unfollowButton = document.createElement("button");
+      unfollowButton.textContent = "Unfollow";
+      unfollowButton.style.marginTop = "10px";
+      unfollowButton.style.backgroundColor = "#d9534f";
+      unfollowButton.style.border = "none";
+      unfollowButton.style.color = "#fff";
+      unfollowButton.style.padding = "8px 16px";
+      unfollowButton.style.borderRadius = "4px";
+      unfollowButton.style.cursor = "pointer";
+
+      unfollowButton.addEventListener("click", async () => {
+        try {
+          const unfollowURL = unfollowUserUrlGenerator(profile.id);
+          const response = await fetch(unfollowURL, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+              "X-CSRFToken": csrftoken,
+            },
+          });
+
+          if (response.ok) {
+            console.log(`Unfollowed ${profile.username}`);
+            link.remove(); // Eliminar la tarjeta del DOM
+          } else {
+            console.error(`Failed to unfollow ${profile.username}`);
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      });
+
+      link.appendChild(profileImage);
+      link.appendChild(username);
+      link.appendChild(unfollowButton);
+
+      container.appendChild(link);
     });
+  }
 
-    let profileImage = document.createElement("img");
-    profileImage.src = profile.profile_pic_url;
-    profileImage.alt = `${profile.username}'s profile picture`;
-    profileImage.style.width = "100px";
-    profileImage.style.height = "100px";
-    profileImage.style.borderRadius = "50%";
-    profileImage.style.objectFit = "cover";
-    profileImage.style.cursor = "pointer";
-
-    profileImage.addEventListener("click", () => {
-      window.open(link.href, "_blank");
-    });
-
-    let username = document.createElement("span");
-    let truncatedUsername =
-      profile.username.length > 16
-        ? profile.username.substring(0, 13) + "..."
-        : profile.username;
-    username.textContent = truncatedUsername;
-    username.style.marginTop = "10px";
-    username.style.fontWeight = "bold";
-    username.style.whiteSpace = "nowrap";
-    username.style.overflow = "hidden";
-    username.style.textOverflow = "ellipsis";
-
-    link.appendChild(profileImage);
-    link.appendChild(username);
-
-    container.appendChild(link);
-  });
+  generateCards();
 
   document.documentElement.appendChild(container);
 
